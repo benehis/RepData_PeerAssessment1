@@ -23,7 +23,9 @@ For this part of the assignment, I ignored the missing values in the dataset. Th
 ```{r}
 data <- na.omit(ndata)
 TotalStepsbyDay <- tapply(data$steps, data$date, sum)
+png("Histogram1.png")
 hist(TotalStepsbyDay)
+dev.off()
 mean(data$steps)
 median(data$steps)
 ```
@@ -68,7 +70,11 @@ newdata <- replace(ndata, is.na(ndata), median(data$steps))
 
 New_TotalStepsbyDay <- tapply(newdata$steps, newdata$date, sum)
 
+png("Histogram2.png")
+
 hist(New_TotalStepsbyDay)
+
+dev.off()
 
 mean(newdata$steps)
 
