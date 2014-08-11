@@ -1,0 +1,105 @@
+# Reproducible Research: Peer Assessment 1
+=========================================================
+
+
+## Loading and preprocessing the data 
+The data were loaded and processed using the following codes
+```{r}
+setwd("C:/RCourse/repdata_data_activity")
+ndata <- read.csv("activity.csv")
+head(ndata)
+
+```
+## Finding the mean total number of steps taken per day
+
+For this part of the assignment, I ignored the missing values in the dataset. Thereafter I :
+
+1.Made a histogram of the total number of steps taken each day
+
+
+2.Calculated and report the mean and median total number of steps taken per day
+
+```{r}
+data <- na.omit(ndata)
+TotalStepsbyDay <- tapply(data$steps, data$date, sum)
+hist(TotalStepsbyDay)
+mean(data$steps)
+median(data$steps)
+```
+
+## Finding the average daily activity pattern
+
+For this part of the assignment, I :
+
+1.Made a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+
+2.The plot shows the 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps
+
+```{r}
+
+TotalStepsby5minutes <- tapply(data$steps, data$interval, mean)
+png("figure1.png")
+plot((TotalStepsby5minutes), type="l",
+     xlab="5-minutes-interval", ylab=expression("Average" ~ NumberSteps),
+     main=expression("Average" ~ NumberSteps ~ "5-minutes-Interval"))
+dev.off()
+```
+
+## Imputing missing values
+
+For this part of the assignment, I
+
+1.Calculated and reported the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+
+
+2.Devised a strategy for filling in all of the missing values in the dataset, using median for that day, 
+
+3.Created a new dataset that is equal to the original dataset but with the missing data filled in.
+
+
+4.Made a histogram of the total number of steps taken each day and Calculated and reported the mean and median total number of steps taken per day. I foundout that some these values remain the same while others differ from the estimates from the first part of the assignment. The impact of imputing missing data on the estimates of the total daily number of steps was that the mean decreased in value, while the median remain the same.
+
+```{r}
+sum(is.na(ndata$steps)) 
+
+newdata <- replace(ndata, is.na(ndata), median(data$steps)) 
+
+New_TotalStepsbyDay <- tapply(newdata$steps, newdata$date, sum)
+
+hist(New_TotalStepsbyDay)
+
+mean(newdata$steps)
+
+median(newdata$steps)
+```
+
+## Are there differences in activity patterns between weekdays and weekends?
+
+For this part of the assignment, I Used the dataset with the filled-in missing values to:
+
+1.Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+
+2.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+
+```{r}
+newdata$day <- weekdays(as.Date(newdata$date))
+
+weekdata <- transform(newdata, weekday = ifelse (newdata$day %in% c("Saturday", "Sunday"), "Weekend", "Weekday"))
+
+library(plyr)
+library(ggplot2)
+
+TotalStepsbyWeekdays_Weekends <- ddply(weekdata, .(interval, weekday), function(x) mean(x$steps))
+colnames(TotalStepsbyWeekdays_Weekends)[3] <- "steps"
+
+png("figure2.png")
+qplot(interval, steps, data=TotalStepsbyWeekdays_Weekends, color=weekday, geom="line") 
+ggtitle(expression("Average Steps" ~ "5-minutes interval by Source Weeekdays and Weekends")) 
+xlab("Interval") 
+ylab(expression("Average Steps"))
+dev.off()
+```
+
+
