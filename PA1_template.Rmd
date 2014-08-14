@@ -1,11 +1,12 @@
-# Reproducible Research: Peer Assessment 1
-<<<<<<< HEAD
+# Personal movement using activity monitoring devices 
 =========================================================
+
+
 
 
 ## Loading and preprocessing the data 
 The data were loaded and processed using the following codes
-```{r}
+```{r,echo = TRUE }
 setwd("C:/RCourse/repdata_data_activity")
 ndata <- read.csv("activity.csv")
 head(ndata)
@@ -20,7 +21,7 @@ For this part of the assignment, I ignored the missing values in the dataset. Th
 
 2.Calculated and report the mean and median total number of steps taken per day
 
-```{r}
+```{r,echo = TRUE}
 data <- na.omit(ndata)
 TotalStepsbyDay <- tapply(data$steps, data$date, sum)
 png("Histogram1.png")
@@ -39,7 +40,7 @@ For this part of the assignment, I :
 
 2.The plot shows the 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps
 
-```{r}
+```{r,echo = TRUE}
 
 TotalStepsby5minutes <- tapply(data$steps, data$interval, mean)
 png("figure1.png")
@@ -63,7 +64,7 @@ For this part of the assignment, I
 
 4.Made a histogram of the total number of steps taken each day and Calculated and reported the mean and median total number of steps taken per day. I foundout that some these values remain the same while others differ from the estimates from the first part of the assignment. The impact of imputing missing data on the estimates of the total daily number of steps was that the mean decreased in value, while the median remain the same.
 
-```{r}
+```{r,echo = TRUE}
 sum(is.na(ndata$steps)) 
 
 newdata <- replace(ndata, is.na(ndata), median(data$steps)) 
@@ -90,7 +91,7 @@ For this part of the assignment, I Used the dataset with the filled-in missing v
 
 2.Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r}
+```{r,echo = TRUE}
 newdata$day <- weekdays(as.Date(newdata$date))
 
 weekdata <- transform(newdata, weekday = ifelse (newdata$day %in% c("Saturday", "Sunday"), "Weekend", "Weekday"))
@@ -110,24 +111,3 @@ dev.off()
 ```
 
 
-=======
-
-
-## Loading and preprocessing the data
-
-
-
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
->>>>>>> dc20c7c4e92aea6af318a611e2669d5b9c6cbfaf
